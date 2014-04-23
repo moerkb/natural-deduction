@@ -29,7 +29,6 @@
 
 ; implication
 (def impl-i {:name "→i"
-             :pre-top '[$1]
              :pre-bot '[(impl $1 $2)]
              :subs '[[$1 $2]]})
 
@@ -39,14 +38,14 @@
 
 ; negation
 (def not-i {:name "¬i"
-            :pre-top '[$1]
-            :subs '[[$1 :contradiction] (not $1)]})
+            :pre-bot '[(not $1)]
+            :subs '[[$1 :contradiction]]})
 
 (def not-e {:name "¬e"
             :pre-top '[$1 (not $1)]
             :subs '[:contradiction]})
 
-; reduction ad absurdum, contradiction
+; reductio ad absurdum, contradiction
 (def raa {:name "RAA"
           :pre-bot '[$1]
           :subs '[[(not $1) :contradiction]]})
