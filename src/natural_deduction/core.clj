@@ -6,3 +6,4 @@
 (load "scope")
 (load "apply-rule")
 (load "natdec-rules")
+(load "world")
