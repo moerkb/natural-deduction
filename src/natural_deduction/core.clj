@@ -1,4 +1,8 @@
-(ns natural-deduction.core)
+(ns natural-deduction.core
+  (require 
+    [clojure.core.logic :refer :all :exclude [==]]
+    [clojure.walk :refer :all]))
 
-(load "propositional-rules")
-(load "tools")
+(load "scope")
+(load "apply-rule")
+(load "natdec-rules")
