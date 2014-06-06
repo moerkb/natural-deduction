@@ -4,6 +4,6 @@
     [clojure.walk :refer :all]))
 
 (load "scope")
-(load "apply-rule")
-(load "natdec-rules")
+(load "apply_rule")
+(load "natdec_rules")
 (load "world")

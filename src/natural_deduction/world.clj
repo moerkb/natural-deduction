@@ -3,28 +3,6 @@
 (def worlds (atom []))
 (def counter (atom 0))
 
-#_(defn build-world
-  ([world]
-    (build-world world false))
-  
-  ([world flag]
-    (let [f (first world)
-          n (next world)
-          fl (if flag
-               flag
-               (= f '⊢))
-          b (if (= f '⊢)
-              :todo
-              f)
-          hashset {:body b
-                   :hash (when (not= f '⊢) (swap! counter inc))
-                   :rule (when (not fl) :premise)}]
-      (if (first n)
-        (cons
-          hashset
-          (build-world n fl))
-        [hashset]))))
-
 (defn build-world
   [world]
   (let [flag (atom false)]

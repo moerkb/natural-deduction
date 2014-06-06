@@ -18,7 +18,7 @@
             (if n
               (scope-from (vec n) new-scope elem true)
               nil)))
-        (if (= (:hash f) (:hash elem))
+        (if (= f elem)
           (set (flatten (map #(filter (complement vector?) %) new-scope)))
           (scope-from (vec n) new-scope elem true)))
     nil))))
