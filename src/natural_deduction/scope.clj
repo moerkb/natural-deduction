@@ -1,6 +1,10 @@
 (ns natural-deduction.core)
 
 (defn scope-from
+  "Takes a world and an element in this world.
+   The world is a nested vector like [a [b c] d].
+   The result is a set of the scope of the element in this world.
+   e.g. (scope-from [a [b c] d] a) => #{a d}"
   ([world elem]
   (scope-from world [] elem false))
   

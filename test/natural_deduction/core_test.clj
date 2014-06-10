@@ -3,3 +3,4 @@
             [natural-deduction.core :refer :all]))
 
 (load "scope_test")
+(load "world_test")
