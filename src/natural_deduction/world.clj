@@ -23,7 +23,7 @@
         (if (vector? x)
           x
           {:body (if (= x '⊢) (do (reset! flag true) :todo) x)
-           :hash (when (not= x '⊢) (swap! counter inc))
+           :hash (swap! counter inc)
            :rule (when (not @flag) :premise)}
           ))
       world)))
@@ -32,7 +32,7 @@
   "Get a transformed world element and return a pretty String of this element.
    A body with :todo becomes a \"...\"
 
-   E.g.  #{:body a, :hash 1; :rule :premise} => \"a (#1 premise)\""
+   E.g.  {:body a, :hash 1, :rule :premise} => \"a (#1 premise)\""
   [elem]
   (let [r (:rule elem)]
     (if (= (:body elem) :todo)

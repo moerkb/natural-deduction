@@ -1,12 +1,12 @@
 (ns natural-deduction.core-test)
 
 (deftest scope-from-test
-  (let [a {:body 'a, :hash 1, :rule :assumption}
-        b {:body 'b, :hash 2, :rule :assumption}
-        c {:body 'c, :hash 3, :rule :assumption}
-        d {:body 'd, :hash 4, :rule :assumption}
-        e {:body 'e, :hash 5, :rule :assumption}
-        f {:body 'f, :hash 6, :rule :assumption}
+  (let [a {:body 'a, :hash 1, :rule :premise}
+        b {:body 'b, :hash 2, :rule :premise}
+        c {:body 'c, :hash 3, :rule :premise}
+        d {:body 'd, :hash 4, :rule :premise}
+        e {:body 'e, :hash 5, :rule :premise}
+        f {:body 'f, :hash 6, :rule :premise}
         world [a [b [c] d] [e] f]]
     
     (testing "Scope"
