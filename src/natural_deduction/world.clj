@@ -2,6 +2,7 @@
 
 (def worlds (atom []))
 (def counter (atom 0))
+(def rules (atom nil))
 
 (defn build-world
   "Get a nested vector as world and transform it.
@@ -81,4 +82,27 @@
     (reset! counter 0)
     (reset! worlds [(vec (build-world new-world))])
     (pretty-printer (last @worlds))))
+
+(defn load-rule!
+  "Load a file with rules to use they in the world."
+  [file]
+  (reset! rules (read-string (str "#{" (slurp (clojure.string/replace file "\\" "/")) "}"))))
+
+(defn show-all-foreward-rules
+  []
+  (doseq
+    [r (filter :foreward @rules)]
+    (println
+      (str (:name r)
+           "\t\targuments: " (apply str (interpose ", " (:args r)))
+           "\t\tresult: " (:foreward r)))))
+
+(defn show-all-backward-rules
+  []
+  (doseq
+    [r (filter :backward @rules)]
+    (println
+      (str (:name r)
+           "\t\targuments: " (apply str (interpose ", " (:args r)))
+           "\t\tresult: " (:backward r)))))
   
