@@ -12,7 +12,7 @@
    :hash is a number to ident this element
    :rule is the rule that returns this entry (in this case rule is :premise before infer)
 
-   To get a proof you need an infer \"⊢\".
+   To get a proof you need an infer (\"⊢\" or \"INFER\").
    An infer gets the body :todo
 
    E.g. [a ⊢ b] => [#{:body a, :hash 1, :rule :premise} #{:body :todo, :hash 2, :rule nil} #{:body b, :hash 2, :rule nil}]"
@@ -23,7 +23,7 @@
       (fn [x]
         (if (vector? x)
           x
-          {:body (if (= x '⊢) (do (reset! flag true) :todo) x)
+          {:body (if (or (= x '⊢) (= x 'INFER)) (do (reset! flag true) :todo) x)
            :hash (swap! counter inc)
            :rule (when (not @flag) :premise)}
           ))
@@ -36,13 +36,13 @@
    E.g.  {:body a, :hash 1, :rule :premise} => \"a (#1 premise)\""
   [elem]
   (let [r (:rule elem)]
-    (if (= (:body elem) :todo)
-      "..."
-      (str (:body elem)
-           "\t(#"
-           (:hash elem)
-           (when r (str "\t" r))
-           ")"))))
+    (str (if (= (:body elem) :todo)
+           "..."
+           (:body elem))
+         "\t(#"
+         (:hash elem)
+         (when r (str "\t" r))
+         ")")))
 
 (defn pretty-printer
   "Gets a transformed world and print it on the stdout.
@@ -83,6 +83,10 @@
     (reset! worlds [(vec (build-world new-world))])
     (pretty-printer (last @worlds))))
 
+(defn show-world
+  []
+  (pretty-printer (last @worlds)))
+
 (defn load-rule!
   "Load a file with rules to use they in the world."
   [file]
@@ -105,4 +109,35 @@
       (str (:name r)
            "\t\targuments: " (apply str (interpose ", " (:args r)))
            "\t\tresult: " (:backward r)))))
-  
+
+(defn apply-rule!
+  [rule foreward? & hashes]
+  (let [elems (flatten (filter
+                         (fn [x] (some
+                                   (fn [y] (= (:hash x) y))
+                                   hashes))
+                         (flatten (last @worlds))))
+        todo (first (filter #(= (:body %) :todo) elems))
+        args (filter #(not= todo %) elems)
+        scope (scope-from (last @worlds) todo)
+        elemts-in-scope? (every? true? (map
+                                         (fn [x] (some
+                                                   (fn [y] (= x y))
+                                                   scope))
+                                         elems))
+        rul (first (filter #(= rule (:name %)) @rules))
+        rule-return-index (when rul (.indexOf (:args rul) (if foreward? (:foreward rul) (:backward rul))))
+        todo-index (.indexOf elems todo)]
+    (cond
+      (not rul) (println "This rule does not exist.")
+      (not= (count hashes) (count elems)) (println "Double used or wrong hashes.")
+      (not= (dec (count elems)) (count args)) (println "Wrong number of \"...\" is chosen. Please choose one \"...\".")
+      (not elemts-in-scope?) (println "At least one element is out of scope.")
+      (not= rule-return-index todo-index) (println "Order does not fit.")
+       ;TODO anwenden auf welt
+      :else (let [res (apply-rule-1step foreward? rul args)
+                  news (filter #(re-find #"_[0-9]+" (str %)) (flatten res)) ; Elements like _0 are new elements.
+                  new-res (prewalk-replace (zipmap news (map #(symbol (str "P" %)) (range))) res)] ;TODO neue Elemente korrekt bilden.
+              (when res
+                new-res)
+    ))))

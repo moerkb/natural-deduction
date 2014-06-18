@@ -12,7 +12,7 @@
         (clojure.walk/prewalk-replace {var new-var} pred)))))
 
 (defn reform
-  "Reform a rule form. (It is needed to use apply-rule)
+  "Reform a rule form. (It is needed to use apply-rule-reform)
    Returns a String."
   [form quoted?]
   (cond
@@ -20,7 +20,7 @@
     (coll? form) (str (when (not quoted?) "`")"(" (apply str (interpose " " (map #(reform % true) form))) ")")
     :else (str (when quoted? "~") "'" form)))
 
-(defn apply-rule
+(defn apply-rule-reform
   "Reform an unreformed(!) rule form to function that uses core.logic.
    Returns a String."
   [rule]
@@ -48,7 +48,7 @@
             movement
             (= (inc (count terms)) (count (:args rule))))
       (let [index (atom -1)
-            r (apply-rule rule)
+            r (apply-rule-reform rule)
             args (apply str (interpose " " (map
                                              (fn [x]
                                                (if (= x movement)

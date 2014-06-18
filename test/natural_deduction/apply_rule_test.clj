@@ -16,13 +16,13 @@
     (testing "Reform"
              (is (= "`((~':args (~$a ~$or)) (~':forms ((~$or (~$a ~'∨ ~$b)))) (~':foreward ~$or) (~':backward ~$a))" (reform rule false))))))
 
-(deftest apply-rule-test
+(deftest apply-rule-reform-test
   (let [rule '{:args [$a $or]
                :forms [[$or ($a ∨ $b)]]
                :foreward $or
                :backward $a}]
     (testing "Apply Rule"
-             (is (= "(fn [$a $or] (clojure.core.logic/fresh [$b] (clojure.core.logic/== $or `(~$a ~'∨ ~$b))))" (apply-rule rule))))))
+             (is (= "(fn [$a $or] (clojure.core.logic/fresh [$b] (clojure.core.logic/== $or `(~$a ~'∨ ~$b))))" (apply-rule-reform rule))))))
 
 (deftest apply-rule-1step-test
   (let [rule '{:args [$a $or]
